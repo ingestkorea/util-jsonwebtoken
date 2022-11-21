@@ -17,8 +17,8 @@ npm install @ingestkorea/util-jsonwebtoken
 ### Create KeyPair
 
 ```js
-import { writeFileSync } from 'node:fs'
-import { createJsonWebKeyEC256 } from '../index';
+import { writeFileSync } from 'node:fs';
+import { createJsonWebKeyEC256 } from '@ingestkorea/util-jsonwebtoken';
 (async () => {
     const dist = __dirname + '/' + 'keyInfo.json';
     const keyInfo = await createJsonWebKeyEC256();
