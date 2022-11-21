@@ -59,6 +59,7 @@ export class JsonWebTokenClient {
                 code: 401, type: 'Unauthorized',
                 message: 'Invalid Credentials', description: 'Invalid Client Issuer'
             });
+            resolvedIssuer = issuer;
         };
         if (mode == 'verify') resolvedIssuer = DEFAULT_ISSUER;
 

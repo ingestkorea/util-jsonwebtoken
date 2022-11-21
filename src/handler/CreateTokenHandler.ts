@@ -34,12 +34,12 @@ export const CreateTokenHandler = async (
     const params: CreateTokenInput = {
         header: { typ: 'JWT', alg: 'ES256' },
         payload: {
+            ...input,
+            ...(serviceName != undefined && { service: serviceName }),
             iss: issuer,
             jti: uuid,
             iat: current,
             exp: expires,
-            ...input,
-            ...(serviceName != undefined && { service: serviceName })
         }
     };
     const { stringToSign, signature } = await createSignature(params, privateKey);
