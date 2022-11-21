@@ -5,6 +5,7 @@ INGESTKOREA Util JsonWebToken Handler for Node.js.
 
 ## Installing
 ```sh
+npm install @ingestkorea/util-error-handler
 npm install @ingestkorea/util-jsonwebtoken
 ```
 
@@ -34,6 +35,7 @@ import { createJsonWebKeyEC256 } from '@ingestkorea/util-jsonwebtoken';
 ### Import
 
 ```typescript
+import { IngestkoreaError } from '@ingestkorea/util-error-handler';
 import {
     JsonWebTokenClient,
     CreateTokenHandlerInput,
