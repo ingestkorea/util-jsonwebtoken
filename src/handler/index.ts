@@ -1,2 +1,2 @@
-export * from './CreateTokenHandler';
-export * from './VerifyTokenHandler';
+export * from './createTokenHandler';
+export * from './verifyTokenHandler';

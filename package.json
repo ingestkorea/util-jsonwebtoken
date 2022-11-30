@@ -1,7 +1,7 @@
 {
   "name": "@ingestkorea/util-jsonwebtoken",
-  "version": "1.0.4",
-  "description": "INGESTKOREA Util JsonWebToken Handler for Node.js.",
+  "version": "1.0.5",
+  "description": "INGESTKOREA Utility JsonWebToken Handler for Node.js.",
   "main": "./dist-cjs/index.js",
   "module": "./dist-es/index.js",
   "types": "./dist-types/index.d.ts",
@@ -22,8 +22,10 @@
     "url": "https://github.com/ingestkorea/util-jsonwebtoken/issues"
   },
   "homepage": "https://github.com/ingestkorea/util-jsonwebtoken#readme",
-  "dependencies": {
-    "@ingestkorea/util-error-handler": "^1.0.1",
+  "devDependencies": {
     "@types/node": "^18.11.9"
+  },
+  "dependencies": {
+    "@ingestkorea/util-error-handler": "^1.0.1"
   }
 }
