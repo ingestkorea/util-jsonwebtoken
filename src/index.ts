@@ -1,4 +1,6 @@
-export * from './handler';
-export * from './models';
-export * from './utils';
-export * from './client';
+export {
+  CreateTokenHandlerInput, CreateTokenHandlerOutput,
+  VerifyTokenHandlerInput, VerifyTokenHandlerOutput
+} from './handler';
+export { createJsonWebKeyEC256 } from './utils';
+export { JsonWebTokenClient, JsonWebTokenClientConfig } from './client';
