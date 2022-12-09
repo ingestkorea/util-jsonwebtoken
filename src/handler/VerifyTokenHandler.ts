@@ -18,23 +18,19 @@ export const verifyTokenHandler = async (
   input: VerifyTokenHandlerInput,
   config: JsonWebTokenClientResolvedConfig
 ): Promise<VerifyTokenHandlerOutput> => {
-  const { token } = input;
-  const { mode, credentials } = config;
-  const { publicKey } = credentials;
-  if (!token) throw new IngestkoreaError({
+  if (!config.mode.verfiy) throw new IngestkoreaError({
+    code: 400, type: 'Bad Request',
+    message: 'Invalid Params', description: 'JsonWebTokenClient is not verify mode'
+  });
+
+  const { publicKey } = config.mode.verfiy
+
+  if (!input.token) throw new IngestkoreaError({
     code: 401, type: 'Unauthorized',
     message: 'Invalid Credentials', description: 'Check Input Token'
   });
-  if (mode != 'verify') throw new IngestkoreaError({
-    code: 401, type: 'Unauthorized',
-    message: 'Invalid Credentials', description: 'Check Verify Mode'
-  });
-  if (!publicKey) throw new IngestkoreaError({
-    code: 401, type: 'Unauthorized',
-    message: 'Invalid Credentials', description: 'Check Public Key'
-  });
 
-  const data = await convertToken({ token: token });
+  const data = await convertToken({ token: input.token });
   await verifySignature(data, publicKey);
   await verifyExpires(data, publicKey);
 
@@ -46,7 +42,7 @@ export const verifyTokenHandler = async (
   return { ...response };
 };
 
-export interface ConvertTokenInput extends Required<VerifyTokenHandlerInput> {
+export interface ConvertTokenInput extends VerifyTokenHandlerInput {
 
 };
 export interface ConvertTokenOutput extends VerifyTokenHandlerOutput {
@@ -56,8 +52,7 @@ export interface ConvertTokenOutput extends VerifyTokenHandlerOutput {
 export const convertToken = async (
   input: ConvertTokenInput
 ): Promise<ConvertTokenOutput> => {
-  const { token } = input;
-  const splitToken = token.split('.');
+  const splitToken = input.token.split('.');
   if (splitToken.length !== 3) throw new IngestkoreaError({
     code: 400, type: 'Bad Request',
     message: 'Invalid Signature', description: 'Invalid Token Structure'
@@ -109,28 +104,12 @@ const deserialize_json_JsonWebTokenHeader = (output: any): Partial<JsonWebTokenH
 const deserialize_json_JsonWebTokenPayload = (output: any): Partial<JsonWebTokenPayload> => {
   const { iss, iat, exp, jti } = output;
   return {
+    ...output,
     iss: iss != undefined ? iss : undefined,
     iat: iat != undefined ? iat : undefined,
     exp: exp != undefined ? exp : undefined,
     jti: jti != undefined ? jti : undefined,
-    ...output,
   };
-};
-
-export const verifySignature = async (input: ConvertTokenOutput, publicKey: JsonWebKey): Promise<void> => {
-  const { stringToSign, header, payload, signature } = input;
-  if (!signature) throw new IngestkoreaError({
-    code: 400, type: 'Bad Request', message: 'Invalid Request', description: 'Signature Undefined'
-  });
-
-  const publicKeyObject = await createPublicKeyObject(publicKey);
-  const isValid = createVerify('sha256')
-    .update(stringToSign, 'utf-8').end()
-    .verify(publicKeyObject, signature, 'base64url');
-  if (!isValid) throw new IngestkoreaError({
-    code: 401, type: 'Unauthorized', message: 'Invalid Signature'
-  });
-  return;
 };
 
 export const verifyExpires = async (input: ConvertTokenOutput, publicKey: JsonWebKey): Promise<void> => {
@@ -148,6 +127,21 @@ export const verifyExpires = async (input: ConvertTokenOutput, publicKey: JsonWe
   if (current > exp || current < iat) throw new IngestkoreaError({
     code: 401, type: 'Unauthorized', message: 'Invalid Credentials', description: 'Token Expired'
   });
+  return;
+};
 
+export const verifySignature = async (input: ConvertTokenOutput, publicKey: JsonWebKey): Promise<void> => {
+  const { stringToSign, header, payload, signature } = input;
+  if (!signature) throw new IngestkoreaError({
+    code: 400, type: 'Bad Request', message: 'Invalid Request', description: 'Signature Undefined'
+  });
+
+  const publicKeyObject = await createPublicKeyObject(publicKey);
+  const isValid = createVerify('sha256')
+    .update(stringToSign, 'utf-8').end()
+    .verify(publicKeyObject, signature, 'base64url');
+  if (!isValid) throw new IngestkoreaError({
+    code: 401, type: 'Unauthorized', message: 'Invalid Signature'
+  });
   return;
 };

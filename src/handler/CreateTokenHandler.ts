@@ -14,19 +14,12 @@ export interface CreateTokenHandlerOutput extends CreateTokenOutput {
 export const createTokenHandler = async (
   input: CreateTokenHandlerInput, config: JsonWebTokenClientResolvedConfig
 ): Promise<CreateTokenHandlerOutput> => {
-  const { mode, credentials, options } = config;
-  const { privateKey } = credentials;
-  const { expiresIn, issuer, serviceName } = options;
-
-  if (mode != 'sign') throw new IngestkoreaError({
-    code: 401, type: 'Unauthorized',
-    message: 'Invalid Credentials', description: 'Check Sign Mode'
-  });
-  if (!privateKey) throw new IngestkoreaError({
+  if (!config.mode.sign) throw new IngestkoreaError({
     code: 400, type: 'Bad Request',
-    message: 'Invalid Params', description: 'Check Private Key'
+    message: 'Invalid Params', description: 'JsonWebTokenClient is not sign mode'
   });
 
+  const { privateKey, expiresIn, issuer, serviceName } = config.mode.sign;
   const { seconds: current } = await convertUnixTimeStamp();
   const expires = current + expiresIn;
   const uuid = randomUUID();

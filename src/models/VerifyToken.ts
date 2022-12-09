@@ -1,7 +1,7 @@
 import { JsonWebTokenHeader, JsonWebTokenPayload } from './types';
 
 export interface VerifyTokenInput {
-  token?: string
+  token: string
 };
 
 export interface VerifyTokenOutput {

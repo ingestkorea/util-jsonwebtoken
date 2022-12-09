@@ -20,7 +20,7 @@ npm install @ingestkorea/util-jsonwebtoken
   npm install -D @types/node # save dev mode
   ```
 
-### Support Algorithm
+### Support Algorithms
 
 + ES256 (ECDSA using P-256 curve and SHA-256 hash algorithm)
 
@@ -43,8 +43,7 @@ import { createJsonWebKeyEC256 } from '@ingestkorea/util-jsonwebtoken';
 
 ### Import
 
-```typescript
-import { IngestkoreaError } from '@ingestkorea/util-error-handler';
+```ts
 import {
   JsonWebTokenClient,
   CreateTokenHandlerInput,
@@ -55,21 +54,20 @@ import { publicKey, privateKey } from './keyInfo.json';
 
 ### Usage
 
-#### [ CreateToken ] 
+#### CreateToken
++ Initiate client with configuration.(`sign`, `privateKey`)
 
-+ Initiate client with configuration.
-
-```typescript
+```ts
 // a client can be shared by different CreateTokenHandlerInput params.
 const client = new JsonWebTokenClient({
   mode: 'sign',
   credentials: {
     privateKey: privateKey
   },
-  options: {
-    issuer: 'hello-world.com',
-    expiresIn: 3600 * 3, // optional, default 3600
-    serviceName: 'sample-servie' // optional
+  options: { // optional
+    issuer: 'hello-world.com', // default your hostname
+    expiresIn: 3600 * 3, // default 3600
+    serviceName: 'sample-servie' // default "USER_NAME token service"
   }
 });
 
@@ -87,11 +85,10 @@ const client = new JsonWebTokenClient({
 })();
 ```
 
-#### [ VerifyToken ]
+#### VerifyToken
++ Initiate client with configuration.(`verify`, `publicKey`)
 
-+ Initiate client with configuration.
-
-```js
+```ts
 // a client can be shared by different VerifyTokenHandlerInput params.
 let client = new JsonWebTokenClient({
   mode: 'verify',
